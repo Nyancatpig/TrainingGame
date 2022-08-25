@@ -20,12 +20,14 @@ public class ClimbingControls : MonoBehaviour
     public float spawnCooldown, cooldownMultiplier, spawnSpeedCap;
     private bool canSpawn = true;
     public float platformSpawnHeight;
-    private int score;
+    public int score;
     public TextMeshProUGUI scoreBoard;
 
     // Start is called before the first frame update
     void Start()
     {
+        platformIndex = -1;
+        //Creates the list because private lists have errors
         savedPlatform = new List<GameObject>();
         savedPostions = new List<int>();
     }
@@ -39,10 +41,12 @@ public class ClimbingControls : MonoBehaviour
         if(Input.GetKeyDown(inputKey[3])) moveToNextPlatform(3);
         if(canSpawn)
         {
+            //Creates a platform if can spawn is true
             createPlatform();
         }
         for(int i = 0; i <= savedPlatform.Count -1; i++)
         {
+            //If the platform is above the despawn level, move them down. But if they are, remove them.
             if(savedPlatform[i].transform.position.y >= -platformSpawnHeight)
             {
                 savedPlatform[i].transform.position = new Vector3(savedPlatform[i].transform.position.x, savedPlatform[i].transform.position.y - platformMoveAmount * Time.deltaTime * (score * 0.2f + 1f), savedPlatform[i].transform.position.z);
@@ -54,15 +58,17 @@ public class ClimbingControls : MonoBehaviour
         }
         try
         {
-            player.transform.position = new Vector3(savedPlatform[platformIndex - 1].GetComponentInChildren<Transform>().transform.position.x, savedPlatform[platformIndex - 1].GetComponentInChildren<Transform>().transform.position.y, player.transform.position.z);
+            //Update the player's position to the platform at the platform index
+            player.transform.position = new Vector3(savedPlatform[platformIndex].GetComponentInChildren<Transform>().transform.position.x, savedPlatform[platformIndex].GetComponentInChildren<Transform>().transform.position.y, player.transform.position.z);
         }
         catch (Exception e)
         {
-
+            Debug.Log("Error " +e);
         }
     }
     private void RemovePlatform(GameObject platform)
     {
+        //Take one from the platform index, then remove the platform and its position index from the lists, then destroy the object.
         platformIndex--;
         savedPostions.RemoveAt(savedPlatform.IndexOf(platform));
         savedPlatform.Remove(platform);
@@ -70,24 +76,36 @@ public class ClimbingControls : MonoBehaviour
     }
     private void moveToNextPlatform(int inputIndex)
     {
-        if(inputIndex == savedPostions[platformIndex])
+        try
         {
-            platformIndex++;
-            score++;
-            updateScore();
+            // If the given input matches the next platform, the player lives, otherwise the player has died.
+            if(inputIndex == savedPostions[platformIndex + 1])
+            {
+                platformIndex++;
+                score++;
+                updateScore();
+            }
+            else
+            {
+                Debug.Log("PLAYER HAS DIED");
+            }
         }
-        else
+        catch(Exception e)
         {
-            Debug.Log("PLAYER HAS DIED");
+            Debug.Log("Error "+e);
         }
     }
+    //Changes the score text to match the score
     public void updateScore()
     {
         scoreBoard.text = "Score: " + score;
     }
     private void createPlatform()
     {
+        //Disable spawning so more platforms don't spawn
         canSpawn = false;
+
+        //Attempt to find a position that the platform can spawn from
         int rnd = lastPosition;
         do
         {
@@ -95,9 +113,11 @@ public class ClimbingControls : MonoBehaviour
         }while (rnd == lastPosition);
         lastPosition = rnd;
         savedPostions.Add(lastPosition);
+        //Create a new platform after saving the position that it will spawn at. Save it to the list of platforms
         GameObject newPlatform = Instantiate(platformPrefab, new Vector3(platformPos[rnd], platformSpawnHeight, 0), Quaternion.identity);
         savedPlatform.Add(newPlatform);
 
+        //Call reset spawn after the delay based on the score and multiplier
         if(score < spawnSpeedCap)
         {
             Invoke(nameof(resetSpawn), spawnCooldown - cooldownMultiplier*score);
@@ -107,6 +127,7 @@ public class ClimbingControls : MonoBehaviour
             Invoke(nameof(resetSpawn), spawnCooldown-(spawnSpeedCap*cooldownMultiplier));
         }
     }
+    //Set can spawn to true
     private void resetSpawn()
     {
         canSpawn = true;
