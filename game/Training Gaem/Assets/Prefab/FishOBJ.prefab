@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 754803423333619774}
   m_Layer: 0
   m_Name: FishOBJ
-  m_TagString: Untagged
+  m_TagString: Fish
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -29,6 +29,7 @@ Transform:
   m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
   m_LocalPosition: {x: -12.076, y: 0.56, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1005183200776983390}
   m_Father: {fileID: 0}
@@ -48,6 +49,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lifeTime: 10
   moveSpeed: 2
+  value: 1
   moveDir: 1
   scared: 0
 --- !u!50 &754803423333619768

@@ -7,13 +7,16 @@ public class FishAI : MonoBehaviour
     public float lifeTime;
     public float moveSpeed;
     private float readSpeed;
+    public float value;
     private Rigidbody2D rb;
     public bool moveDir;
     public bool scared;
+    private SwimingControls swimingScript;
     void Start()
     {
         //Lock in the speed
         rb = GetComponent<Rigidbody2D>();
+        swimingScript = FindObjectOfType<SwimingControls>();
         readSpeed = moveSpeed;
     }
     void Awake()
@@ -23,12 +26,15 @@ public class FishAI : MonoBehaviour
     }
     void Update()
     {
-        //Move the fish and slowly kill it
-        moveFish();
-        lifeTime -= Time.deltaTime;
-        if(lifeTime <= 0)
+        if(swimingScript.playing)
         {
-            Death();
+            //Move the fish and slowly kill it
+            moveFish();
+            lifeTime -= Time.deltaTime;
+            if(lifeTime <= 0)
+            {
+                Death();
+            }
         }
     }
     void moveFish()
@@ -49,6 +55,7 @@ public class FishAI : MonoBehaviour
         //If they touch the player, die
         if(other.CompareTag("Player"))
         {
+            swimingScript.updateScore(value);
             Death();
         }
     }

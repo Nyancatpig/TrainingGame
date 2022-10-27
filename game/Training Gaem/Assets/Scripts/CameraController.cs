@@ -23,7 +23,11 @@ public class CameraController : MonoBehaviour
         public bool followCameraRotation, controlXRot, controlYRot, controlZRot;
     }
     public objectsToControl[] objectToFollow;
-
+    private Camera camera;
+    void Start()
+    {
+        camera = GetComponent<Camera>();
+    }
     public void updateMainIndex(int index)
     {
         mainIndex = index;
@@ -32,58 +36,72 @@ public class CameraController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Transform mainTransform = objectToFollow[mainIndex].objectTransform;
-        Ray ray = new Ray(mainTransform.position + originOffset.x * mainTransform.right + originOffset.y * mainTransform.up, mainTransform.forward * camPos.x  +  mainTransform.up * camPos.y);
-        Debug.DrawRay(objectToFollow[mainIndex].objectTransform.position + originOffset, ray.GetPoint(camDistance), Color.green, 0.1f);
-        transform.position = Vector3.SmoothDamp(transform.position, ray.GetPoint(camDistance), ref velocity, camSpeed);
-        Vector3 lookPos = objectToFollow[mainIndex].objectTransform.position;
-
-        if(!doMouseMovement)
+        if(mainIndex >= 0 && mainIndex < objectToFollow.Length)
         {
-            if(lookAtTarget)
+            Transform mainTransform = objectToFollow[mainIndex].objectTransform;
+            Ray ray = new Ray(mainTransform.position + originOffset.x * mainTransform.right + originOffset.y * mainTransform.up, mainTransform.forward * camPos.x  +  mainTransform.up * camPos.y);
+            Debug.DrawRay(objectToFollow[mainIndex].objectTransform.position + originOffset, ray.GetPoint(camDistance), Color.green, 0.1f);
+            /*if(camera.orthographic)
             {
-                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.Normalize(objectToFollow[mainIndex].objectTransform.position - transform.position)), Time.deltaTime * camRotSpeed);
+                camera.orthographicSize = Vector3.SmoothDamp(transform.position, ray.GetPoint(camDistance), ref velocity, camSpeed).z;
             }
             else
-            {
-                transform.rotation = Quaternion.Slerp(transform.rotation, objectToFollow[mainIndex].objectTransform.rotation, Time.deltaTime * camRotSpeed);
-            }
-        }
-        else if (doMouseMovement)
-        {
-            float mouseX = Input.GetAxisRaw("Mouse X")* Time.deltaTime * sensitivity.x;
-            float mouseY = Input.GetAxisRaw("Mouse Y")* Time.deltaTime * sensitivity.y;
+            {*/
+                transform.position = Vector3.SmoothDamp(transform.position, ray.GetPoint(camDistance), ref velocity, camSpeed);
+            //}
+            Vector3 lookPos = objectToFollow[mainIndex].objectTransform.position;
 
-            rotation.y += mouseX;
-            rotation.x -= mouseY;
-            rotation.x = Mathf.Clamp(rotation.x, -90f, 90f);
-
-            transform.rotation = Quaternion.Euler(rotation.x,rotation.y,0);
-            for(int i = 0; i < objectToFollow.Length; i++)
+            if(!doMouseMovement)
             {
-                if(objectToFollow[i].followCameraRotation)
+                if(lookAtTarget)
                 {
-                    Vector3 tempRotation = new Vector3(0,0,0);
-                    if(objectToFollow[i].objectTransform.parent != null)
-                    {
-                        tempRotation = objectToFollow[i].objectTransform.transform.eulerAngles;
-                    }
-
-                    if(objectToFollow[i].controlXRot)
-                    {
-                        tempRotation = new Vector3(rotation.x, tempRotation.y, tempRotation.z);
-                    }
-                    if(objectToFollow[i].controlYRot)
-                    {
-                        tempRotation = new Vector3(tempRotation.x, rotation.y, tempRotation.z);
-                    }
-                    if(objectToFollow[i].controlZRot)
-                    {
-                        tempRotation = new Vector3(tempRotation.x, tempRotation.y, rotation.z);
-                    }                
-                    objectToFollow[i].objectTransform.eulerAngles = tempRotation;
+                    transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.Normalize(objectToFollow[mainIndex].objectTransform.position - transform.position)), Time.deltaTime * camRotSpeed);
+                }
+                else
+                {
+                    transform.rotation = Quaternion.Slerp(transform.rotation, objectToFollow[mainIndex].objectTransform.rotation, Time.deltaTime * camRotSpeed);
                 }
             }
+            else if (doMouseMovement)
+            {
+                float mouseX = Input.GetAxisRaw("Mouse X")* Time.deltaTime * sensitivity.x;
+                float mouseY = Input.GetAxisRaw("Mouse Y")* Time.deltaTime * sensitivity.y;
+
+                rotation.y += mouseX;
+                rotation.x -= mouseY;
+                rotation.x = Mathf.Clamp(rotation.x, -90f, 90f);
+
+                transform.rotation = Quaternion.Euler(rotation.x,rotation.y,0);
+                for(int i = 0; i < objectToFollow.Length; i++)
+                {
+                    if(objectToFollow[i].followCameraRotation)
+                    {
+                        Vector3 tempRotation = new Vector3(0,0,0);
+                        if(objectToFollow[i].objectTransform.parent != null)
+                        {
+                            tempRotation = objectToFollow[i].objectTransform.transform.eulerAngles;
+                        }
+
+                        if(objectToFollow[i].controlXRot)
+                        {
+                            tempRotation = new Vector3(rotation.x, tempRotation.y, tempRotation.z);
+                        }
+                        if(objectToFollow[i].controlYRot)
+                        {
+                            tempRotation = new Vector3(tempRotation.x, rotation.y, tempRotation.z);
+                        }
+                        if(objectToFollow[i].controlZRot)
+                        {
+                            tempRotation = new Vector3(tempRotation.x, tempRotation.y, rotation.z);
+                        }                
+                        objectToFollow[i].objectTransform.eulerAngles = tempRotation;
+                    }
+                }
+            }
+        }
+        else
+        {
+            Debug.LogError("The main index does not exist! Is the main index less then the length of objects to follows and a non-negative? Are there targets in objects to follow?");
         }
     }
 }

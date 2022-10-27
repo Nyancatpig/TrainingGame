@@ -9,12 +9,8 @@ public class ObjectSpawner : MonoBehaviour
     public bool randomSpawns;
     private int spawnIndex;
     public float spawnDelay;
-    private bool canSpawn;
+    public bool canSpawn;
     
-    void Start()
-    {
-        canSpawn = true;
-    }
     void Update()
     {
         //If can spawn is true, disable spawning then spawn the object
@@ -50,5 +46,15 @@ public class ObjectSpawner : MonoBehaviour
     private void resetSpawn()
     {
         canSpawn = true;
+    }
+    public void clearObjects()
+    {
+        foreach(GameObject spawnedObject in FindObjectsOfType<GameObject>())
+        {
+            if(spawnedObject.tag == objectToSpawn.tag)
+            {
+                Destroy(spawnedObject);
+            }
+        }
     }
 }

@@ -4,24 +4,23 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using System;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class ClimbingControls : MonoBehaviour
 {
-    public Light[] DebugLights;
     public KeyCode[] inputKey;
     public float[] platformPos;
-    public float platformMoveAmount;
-    public GameObject platformPrefab;
-    public GameObject player;
-    private int lastPosition;
-    public List<int> savedPostions;
+    public GameObject startingPlatform, platformPrefab, player;
     public List<GameObject> savedPlatform;
-    private int platformIndex;
-    public float spawnCooldown, cooldownMultiplier, spawnSpeedCap;
-    private bool canSpawn = true;
-    public float platformSpawnHeight;
     public int score;
-    public TextMeshProUGUI scoreBoard;
+    private int lastPosition,platformIndex;
+    public List<int> savedPostions;
+    public float platformMoveAmount, spawnCooldown, cooldownMultiplier, spawnSpeedCap,platformSpawnHeight;
+    private bool starting = true, canSpawn = true, playing = false;
+    [Header("UI")]
+    public GameObject[] UIPanels;
+    public TextMeshProUGUI scoreBoard, exitScore, exitStats;
+
 
     // Start is called before the first frame update
     void Start()
@@ -30,40 +29,53 @@ public class ClimbingControls : MonoBehaviour
         //Creates the list because private lists have errors
         savedPlatform = new List<GameObject>();
         savedPostions = new List<int>();
+        startGame();
+    }
+    public void startGame()
+    {
+        score = 0;
+        starting = true;
+        Time.timeScale = 1;
+        playing = true;
+        UIPanels[1].SetActive(false);
+        UIPanels[0].SetActive(true);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(inputKey[0])) moveToNextPlatform(0);
-        if(Input.GetKeyDown(inputKey[1])) moveToNextPlatform(1);
-        if(Input.GetKeyDown(inputKey[2])) moveToNextPlatform(2);
-        if(Input.GetKeyDown(inputKey[3])) moveToNextPlatform(3);
-        if(canSpawn)
+        if(playing)
         {
-            //Creates a platform if can spawn is true
-            createPlatform();
-        }
-        for(int i = 0; i <= savedPlatform.Count -1; i++)
-        {
-            //If the platform is above the despawn level, move them down. But if they are, remove them.
-            if(savedPlatform[i].transform.position.y >= -platformSpawnHeight)
+            if(Input.GetKeyDown(inputKey[0])) moveToNextPlatform(0);
+            if(Input.GetKeyDown(inputKey[1])) moveToNextPlatform(1);
+            if(Input.GetKeyDown(inputKey[2])) moveToNextPlatform(2);
+            if(Input.GetKeyDown(inputKey[3])) moveToNextPlatform(3);
+            if(canSpawn)
             {
-                savedPlatform[i].transform.position = new Vector3(savedPlatform[i].transform.position.x, savedPlatform[i].transform.position.y - platformMoveAmount * Time.deltaTime * (score * 0.2f + 1f), savedPlatform[i].transform.position.z);
+                //Creates a platform if can spawn is true
+                createPlatform();
             }
-            else if(savedPlatform[i].transform.position.y <= -platformSpawnHeight)
+            for(int i = 0; i <= savedPlatform.Count -1; i++)
             {
-                RemovePlatform(savedPlatform[i]);
+                //If the platform is above the despawn level, move them down. But if they are, remove them.
+                if(savedPlatform[i].transform.position.y >= -platformSpawnHeight)
+                {
+                    savedPlatform[i].transform.position = new Vector3(savedPlatform[i].transform.position.x, savedPlatform[i].transform.position.y - platformMoveAmount * Time.deltaTime * (score * 0.2f + 1f), savedPlatform[i].transform.position.z);
+                }
+                else if(savedPlatform[i].transform.position.y <= -platformSpawnHeight)
+                {
+                    RemovePlatform(savedPlatform[i]);
+                }
             }
-        }
-        try
-        {
-            //Update the player's position to the platform at the platform index
-            player.transform.position = new Vector3(savedPlatform[platformIndex].GetComponentInChildren<Transform>().transform.position.x, savedPlatform[platformIndex].GetComponentInChildren<Transform>().transform.position.y, player.transform.position.z);
-        }
-        catch (Exception e)
-        {
-            Debug.Log("Error " +e);
+            try
+            {
+                //Update the player's position to the platform at the platform index
+                player.transform.position = new Vector3(savedPlatform[platformIndex].GetComponentInChildren<Transform>().transform.position.x, savedPlatform[platformIndex].GetComponentInChildren<Transform>().transform.position.y, player.transform.position.z);
+            }
+            catch (Exception e)
+            {
+                Debug.Log("Error " +e);
+            }
         }
     }
     private void RemovePlatform(GameObject platform)
@@ -87,12 +99,12 @@ public class ClimbingControls : MonoBehaviour
             }
             else
             {
-                Debug.Log("PLAYER HAS DIED");
+                exitScenario();
             }
         }
         catch(Exception e)
         {
-            Debug.Log("Error "+e);
+            exitScenario();
         }
     }
     //Changes the score text to match the score
@@ -131,5 +143,18 @@ public class ClimbingControls : MonoBehaviour
     private void resetSpawn()
     {
         canSpawn = true;
+    }
+    private void exitScenario()
+    {
+        playing = false;
+        Time.timeScale = 0;
+        UIPanels[0].SetActive(false);
+        UIPanels[1].SetActive(true);
+        exitScore.text = "Score: " + score;
+    }
+    public void loadScene(string sceneName)
+    {
+        Time.timeScale = 1;
+        SceneManager.LoadScene(sceneName);
     }
 }

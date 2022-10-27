@@ -4,5 +4,17 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/MenuScene.unity
+    guid: c0a9e0fda2139324096e6e016ac050c9
+  - enabled: 1
+    path: Assets/Scenes/ClimbingLevel.unity
+    guid: 703d130379a187149800033075bb4181
+  - enabled: 1
+    path: Assets/Scenes/SwimingLevel.unity
+    guid: 956c68901d619c6439cb261ad1b6c689
+  - enabled: 1
+    path: Assets/Scenes/RunningLevel.unity
+    guid: d971f93e8ec3a7443b99cf03eae2ab98
   m_configObjects: {}
