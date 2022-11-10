@@ -17,6 +17,7 @@ public class ClimbingControls : MonoBehaviour
     public List<int> savedPostions;
     public float platformMoveAmount, spawnCooldown, cooldownMultiplier, spawnSpeedCap,platformSpawnHeight;
     private bool starting = true, canSpawn = true, playing = false;
+    public AudioSource source;
     [Header("UI")]
     public GameObject[] UIPanels;
     public TextMeshProUGUI scoreBoard, exitScore, exitStats;
@@ -93,6 +94,7 @@ public class ClimbingControls : MonoBehaviour
             // If the given input matches the next platform, the player lives, otherwise the player has died.
             if(inputIndex == savedPostions[platformIndex + 1])
             {
+                source.Play();
                 platformIndex++;
                 score++;
                 updateScore();
