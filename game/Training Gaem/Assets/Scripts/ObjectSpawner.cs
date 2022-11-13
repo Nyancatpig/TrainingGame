@@ -11,6 +11,7 @@ public class ObjectSpawner : MonoBehaviour
     public float spawnDelay;
     public bool canSpawn;
     
+// Bailey
     void Update()
     {
         //If can spawn is true, disable spawning then spawn the object

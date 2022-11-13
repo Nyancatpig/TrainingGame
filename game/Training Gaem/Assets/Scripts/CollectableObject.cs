@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
+// Angus
 public class CollectableObject : MonoBehaviour
 {
     public string tagName;

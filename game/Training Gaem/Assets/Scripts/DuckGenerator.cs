@@ -11,6 +11,8 @@ public class DuckGenerator : MonoBehaviour
     public int statMin, totalCap;
     public GameObject menuStatText;
     private DuckData duckData;
+
+// Jackson
     public void CreateNewDuck()
     {
         //Creates a new duck entity

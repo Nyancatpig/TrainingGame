@@ -1038,7 +1038,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56a067f5a94edf74face71e961e7e023, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scoreLimit: 1000
+  scoreLimit: 11
   timeLimit: 20
   UI: {fileID: 642901846}
   player: {fileID: 1222824181}

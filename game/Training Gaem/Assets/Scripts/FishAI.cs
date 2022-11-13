@@ -12,6 +12,8 @@ public class FishAI : MonoBehaviour
     public bool moveDir;
     public bool scared;
     private SwimingControls swimingScript;
+
+// Angus
     void Start()
     {
         //Lock in the speed

@@ -11,6 +11,7 @@ public class RunningGameScript : MonoBehaviour
     public GameObject player;
     public CollectableObject[] collectables;
 
+// Jackson
     public void Start()
     {
         player.transform.position = new Vector3(0,0,0);
@@ -32,6 +33,7 @@ public class RunningGameScript : MonoBehaviour
         UI.updateTextBox(new string[] {"Time: " + Mathf.Round(timer)}, new int[]{2});
         if(timer <= 0) endGame();
     }
+// Bailey
     public void updateScore(float value)
     {
         score += value;

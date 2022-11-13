@@ -23,6 +23,7 @@ public class ClimbingControls : MonoBehaviour
     public TextMeshProUGUI scoreBoard, exitScore, exitStats;
 
 
+// Bailey
     // Start is called before the first frame update
     void Start()
     {
@@ -42,6 +43,7 @@ public class ClimbingControls : MonoBehaviour
         UIPanels[0].SetActive(true);
     }
 
+// Angus
     // Update is called once per frame
     void Update()
     {
@@ -87,6 +89,7 @@ public class ClimbingControls : MonoBehaviour
         savedPlatform.Remove(platform);
         Destroy(platform);
     }
+// Jackson
     private void moveToNextPlatform(int inputIndex)
     {
         try
@@ -114,6 +117,7 @@ public class ClimbingControls : MonoBehaviour
     {
         scoreBoard.text = "Score: " + score;
     }
+// Bailey
     private void createPlatform()
     {
         //Disable spawning so more platforms don't spawn
@@ -141,6 +145,7 @@ public class ClimbingControls : MonoBehaviour
             Invoke(nameof(resetSpawn), spawnCooldown-(spawnSpeedCap*cooldownMultiplier));
         }
     }
+// Angus
     //Set can spawn to true
     private void resetSpawn()
     {

@@ -19,6 +19,8 @@ public class SwimingControls : MonoBehaviour
     private float score;
     private ObjectSpawner spawner;
     private Vector3 startPos;
+
+// Angus
     // Start is called before the first frame update
     void Start()
     {
@@ -42,6 +44,7 @@ public class SwimingControls : MonoBehaviour
         UIPanels[0].SetActive(true);
     }
 
+// Jackson
     // Update is called once per frame
     void Update()
     {
@@ -84,6 +87,8 @@ public class SwimingControls : MonoBehaviour
             updateTimer();
         }
     }
+
+// Bailey
     private void updateTimer()
     {
         remainingTime -= Time.deltaTime;
