@@ -12,7 +12,7 @@ public class DuckGenerator : MonoBehaviour
     public GameObject menuStatText;
     private DuckData duckData;
 
-// Jackson
+// All
     public void CreateNewDuck()
     {
         //Creates a new duck entity

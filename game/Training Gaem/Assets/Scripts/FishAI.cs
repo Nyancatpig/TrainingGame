@@ -52,6 +52,7 @@ public class FishAI : MonoBehaviour
                 break;
         }
     }
+// Jackson
     void OnTriggerEnter2D(Collider2D other)
     {
         //If they touch the player, die
